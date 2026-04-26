@@ -1,0 +1,9 @@
+# Dev overrides applied on top of config.yaml when VISIONDRIVE_ENV=dev.
+log_level: DEBUG
+
+api:
+  host: 127.0.0.1
+  port: 5000
+
+features:
+  display_window: true

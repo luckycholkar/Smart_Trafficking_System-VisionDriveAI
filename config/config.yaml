@@ -1,0 +1,77 @@
+# VisionDrive AI - default configuration.
+# Tunable, committed to source. Override per-env with config.dev.yaml /
+# config.prod.yaml, or per-deployment via environment variables (see .env.example).
+
+env: dev
+log_level: INFO
+
+api:
+  host: 127.0.0.1
+  port: 5000
+  recompute_interval_sec: 2.0
+  state_poll_interval_ms: 1000
+
+video:
+  path: data/videos/traffic.mp4
+  output_path: data/videos/hackathon_demo_output.avi
+  output_fps: 25.0
+
+model:
+  # Detector framework. Currently supported: "ultralytics".
+  # New frameworks plug in via visiondrive.models.registry — see docs/models.md.
+  framework: ultralytics
+  weights_path: data/weights/yolov8n.pt
+  tracker_config: bytetrack.yaml
+  conf: 0.15
+  iou: 0.45
+  imgsz: 960
+
+detection:
+  vehicle_class_ids: [1, 2, 3, 5, 7]   # COCO: bicycle, car, motorcycle, bus, truck
+  saturation_per_lane: 20
+  stop_line_ratio_y: 0.62
+
+lanes:
+  ids: [lane_1, lane_2, lane_3, lane_4]
+
+signal:
+  min_green: 8.0
+  max_green: 45.0
+  min_red: 8.0
+  yellow_time: 3.0
+  cycle_buffer: 2.0
+  base_cycle_time: 90.0
+  max_extension: 15.0
+
+features:
+  display_window: true        # show OpenCV imshow window when running locally
+  enable_helmet: false        # requires data/weights/helmet_detector.pt
+  enable_accident: false
+  enable_sms: false           # requires TWILIO_* env vars
+
+helmet:
+  weights_path: data/weights/helmet_detector.pt
+  plate_weights_path: null
+  bike_class_id: 3
+  bike_conf: 0.20
+  nested_conf: 0.35
+  no_helmet_min_conf: 0.45
+  fines_cooldown_sec: 5.0
+
+accident:
+  fps: 25.0
+  overlap_iou_threshold: 0.35
+  stationary_seconds: 2.0
+  stationary_pixel_tolerance: 18.0
+  high_speed_px_per_frame: 16.0
+  near_zero_speed_px_per_frame: 1.8
+  speed_drop_window_frames: 2
+  incidents_dir: incidents
+  camera_id: CAM-01
+  location_name: Main Junction - Smart City Demo
+  gps_lat: null
+  gps_lon: null
+
+notifications:
+  cooldown_seconds: 60.0
+  log_csv_path: emergency_logs.csv
