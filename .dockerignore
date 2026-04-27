@@ -1,0 +1,24 @@
+.git
+.idea
+.vscode
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.venv
+venv
+.env
+.env.*
+!.env.example
+docs
+tests
+incidents
+emergency_logs.csv
+*.avi
+*.mp4
+data/videos/*
+!data/videos/.gitkeep
+# Weights are baked in or mounted at runtime - do not ship in image by default.
+data/weights/*
+!data/weights/.gitkeep

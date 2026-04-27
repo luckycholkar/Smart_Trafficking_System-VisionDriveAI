@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+.venv/
+venv/
+env/
+.python-version
+
+# Tooling
+.idea/
+.vscode/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Data & generated artifacts (never commit weights / videos / outputs)
+data/videos/*
+!data/videos/.gitkeep
+data/weights/*
+!data/weights/.gitkeep
+incidents/
+emergency_logs.csv
+hackathon_demo_output.avi
+cctv_output.avi
+*.avi
+*.mp4
+*.pt
+*.onnx
+*.engine
+!tests/fixtures/**
+
+# OS
+.DS_Store
+Thumbs.db

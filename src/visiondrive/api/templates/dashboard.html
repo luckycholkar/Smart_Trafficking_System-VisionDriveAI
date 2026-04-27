@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VisionDrive AI - Smart Traffic Dashboard</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+           background:#0d0f12; color:#e8e8e8; margin:24px; }
+    header { display:flex; justify-content:space-between; align-items:baseline;
+             border-bottom:1px solid #2a2f37; padding-bottom:12px; margin-bottom:18px; }
+    header h1 { margin:0; font-size:22px; letter-spacing:0.3px; }
+    header small { color:#8a92a0; }
+    .row { display:flex; gap:16px; flex-wrap: wrap; }
+    .card { background:#161a20; border:1px solid #2a2f37; border-radius:10px;
+            padding:14px 18px; min-width:200px; flex:1; }
+    .card h3 { margin:0 0 6px 0; font-size:12px; color:#8a92a0; text-transform:uppercase;
+               letter-spacing:0.6px; font-weight:600; }
+    .card .v { font-size:28px; font-weight:600; color:#f3f3f3; }
+    h3.section { margin-top:24px; color:#a8b0bd; font-weight:500; }
+    pre { background:#0a0c10; padding:14px; border-radius:8px; overflow:auto;
+          border:1px solid #21262d; font-size:13px; line-height:1.5; }
+    .green { color:#5dd58c; } .red { color:#ff6b6b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VisionDrive AI <span style="color:#5dd58c">●</span> Live</h1>
+    <small>v{{ version }} - polling every {{ poll_interval_ms }}ms</small>
+  </header>
+
+  <div class="row">
+    <div class="card"><h3>Total Vehicles</h3><div class="v" id="vehicle_count">0</div></div>
+    <div class="card"><h3>FPS</h3><div class="v" id="fps">0.0</div></div>
+    <div class="card"><h3>Frame</h3><div class="v" id="frame_index">0</div></div>
+    <div class="card"><h3>Active Green</h3><div class="v" id="active_green_lane">-</div></div>
+    <div class="card"><h3>Congestion</h3><div class="v" id="congestion_score">0%</div></div>
+  </div>
+
+  <h3 class="section">Signal State</h3>
+  <pre id="signal_state"></pre>
+  <h3 class="section">Lane Density</h3>
+  <pre id="lane_counts"></pre>
+  <h3 class="section">Recent Violations</h3>
+  <pre id="violations"></pre>
+
+  <script>
+    const POLL_MS = {{ poll_interval_ms }};
+    async function refresh() {
+      try {
+        const res = await fetch('/api/state');
+        if (!res.ok) return;
+        const s = await res.json();
+        document.getElementById('vehicle_count').textContent = s.vehicle_count ?? 0;
+        document.getElementById('fps').textContent = (s.fps ?? 0).toFixed(2);
+        document.getElementById('frame_index').textContent = s.frame_index ?? 0;
+        document.getElementById('active_green_lane').textContent = s.active_green_lane ?? '-';
+        document.getElementById('congestion_score').textContent = `${(s.congestion_score ?? 0).toFixed(1)}%`;
+        document.getElementById('signal_state').textContent = JSON.stringify(s.signal_state ?? {}, null, 2);
+        document.getElementById('lane_counts').textContent = JSON.stringify(s.lane_counts ?? {}, null, 2);
+        document.getElementById('violations').textContent = JSON.stringify((s.violations ?? []).slice(-10), null, 2);
+      } catch (e) { /* swallow polling errors */ }
+    }
+    setInterval(refresh, POLL_MS);
+    refresh();
+  </script>
+</body>
+</html>

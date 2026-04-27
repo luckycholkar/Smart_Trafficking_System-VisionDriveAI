@@ -1,0 +1,12 @@
+# Prod overrides applied on top of config.yaml when VISIONDRIVE_ENV=prod.
+log_level: INFO
+
+api:
+  host: 0.0.0.0
+  port: 5000
+
+features:
+  display_window: false       # no GUI in containers / headless deployments
+  enable_helmet: false
+  enable_accident: true
+  enable_sms: true

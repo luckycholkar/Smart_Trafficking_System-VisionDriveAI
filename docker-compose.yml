@@ -1,0 +1,27 @@
+services:
+  visiondrive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: visiondrive:latest
+    container_name: visiondrive
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      VISIONDRIVE_ENV: prod
+      VISIONDRIVE_API__HOST: 0.0.0.0
+      VISIONDRIVE_API__PORT: 5000
+      VISIONDRIVE_FEATURES__DISPLAY_WINDOW: "false"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./incidents:/app/incidents
+      - ./emergency_logs.csv:/app/emergency_logs.csv
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
